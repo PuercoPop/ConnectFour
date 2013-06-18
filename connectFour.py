@@ -1,13 +1,16 @@
 #!/usr/bin/env python
+"""
+Connect 4 for Python
+"""
 
-#Connect 4 for Python
 
 class ConnectFour(object):
     def __init__(self, columns=7, column_size=6):
         self.board = Board(columns, column_size)
 
     def checkWinner(self):
-        return self.board.checkHorizontal() or self.board.checkVerticalDiagonal()
+        return (self.board.checkHorizontal() or
+                self.board.check_vertical_diagonal())
 
     def checkValidInput(self, userInput):
         valid = False
@@ -48,12 +51,13 @@ class ConnectFour(object):
                         break
             potentialWinner = self.checkWinner()
             if potentialWinner:
-               print str(potentialWinner) + " won the game!"
-               print self.board
-               break
+                print str(potentialWinner) + " won the game!"
+                print self.board
+                break
+
 
 class Board(object):
-    def __init__(self, columns = 7, column_size = 6):
+    def __init__(self, columns=7, column_size=6):
         self.columns = columns
         self.column_size = column_size
         self.resetBoard()
@@ -62,7 +66,8 @@ class Board(object):
         return self.board[x][y] == '_'
 
     def resetBoard(self):
-        self.board = [['_' for j in range(self.columns)] for i in range(self.column_size)]
+        self.board = [['_' for j in range(self.columns)]
+                      for i in range(self.column_size)]
 
     def __str__(self):
         columnNumbers = ""
@@ -96,7 +101,7 @@ class Board(object):
                     return pw
         return False
 
-    def checkVerticalDiagonal(self):
+    def check_vertical_diagonal(self):
         """
         >>> 1 + 1
         3
@@ -107,20 +112,35 @@ class Board(object):
             if rowIndex <= maxLength:
                 for index, val in enumerate(row):
                     if val == 'C' or val == 'P':
-                        # check vertical
-                        if val == self.board[rowIndex + 1][index] and val == self.board[rowIndex + 2][index] and val == self.board[rowIndex + 3][index]:
+                        if self.check_vertical_winning_condition(val,
+                                                                 rowIndex,
+                                                                 index):
                             return val
-                        # check diagonal
-                        if (index <= maxLength and val == self.board[rowIndex + 1][index + 1] and val == self.board[rowIndex + 2][index + 2] and val == self.board[rowIndex + 3][index + 3]) or \
-                        (index >= maxLength and val == self.board[rowIndex + 1][index - 1] and val == self.board[rowIndex + 2][index - 2] and val == self.board[rowIndex + 3][index - 3]):
+                        if self.check_diagonal_winning_condition(val,
+                                                                 index,
+                                                                 rowIndex,
+                                                                 maxLength):
                             return val
         return False
 
+    def check_vertical_winning_condition(self, val, rowIndex, index):
+        return (val == self.board[rowIndex + 1][index] and
+                val == self.board[rowIndex + 2][index] and
+                val == self.board[rowIndex + 3][index])
 
-
+    def check_diagonal_winning_condition(self, val,
+                                         index, rowIndex, maxLength):
+        return ((index <= maxLength and
+                 val == self.board[rowIndex + 1][index + 1] and
+                 val == self.board[rowIndex + 2][index + 2] and
+                 val == self.board[rowIndex + 3][index + 3]) or
+                (index >= maxLength and
+                 val == self.board[rowIndex + 1][index - 1] and
+                 val == self.board[rowIndex + 2][index - 2] and
+                 val == self.board[rowIndex + 3][index - 3]))
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
-    #game = ConnectFour()
-    #game.play()
+    # import doctest
+    # doctest.testmod()
+    game = ConnectFour()
+    game.play()
