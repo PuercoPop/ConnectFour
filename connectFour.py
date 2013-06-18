@@ -2,6 +2,7 @@
 """
 Connect 4 for Python
 """
+import sys
 
 
 class ConnectFour(object):
@@ -12,43 +13,50 @@ class ConnectFour(object):
         return (self.board.checkHorizontal() or
                 self.board.check_vertical_diagonal())
 
-    def checkValidInput(self, userInput):
-        valid = False
-        try:
-            userInput = int(userInput)
-        except ValueError:
-            pass
+    def checkValidInput(self, user_input):
+        """Valid inputs are q plus the integers from 1 to ...
+        """
+        user_input = user_input.lower()
+
+        if user_input in ([str(i) for i in range(1, self.board.columns + 1)] +
+                          ['q']):
+            return True
         else:
-            if userInput in range(1, self.board.columns + 1):
-                valid = True
-        if type(userInput) is str and userInput.lower() == 'q':
-            valid = True
-        return valid
+            return False
+
+
+    def read_player_move(self, current_player):
+        """Read Input until"""
+        while True:
+            move = raw_input(
+                current_player + "'s turn. Enter a column number to move: ")
+            if self.checkValidInput(move):
+                try:
+                    return int(move)
+                except ValueError:
+                    # Assuming it can only be q. Don't like this solution,
+                    # quiting the project earlier would be cleaner but
+                    # quiting the programing in the main loop seems more
+                    # appropiate.
+                    return move
 
     def play(self):
         player = 'P'
         counter = 1
         while True:
             print self.board
-            msg = player + "'s turn. "
-            d = raw_input(msg + "Enter a column number to move: ")
-            if self.checkValidInput(d):
-                try:
-                    d = int(d)
-                except ValueError:
-                    pass
-                if type(d) is int:
-                    for index, row in enumerate(self.board.board):
-                        if self.board.checkEmpty(index, d-1):
-                            self.board.board[index][d-1] = player
-                            if player == 'P':
-                                player = 'C'
-                            elif player == 'C':
-                                player = 'P'
-                            break
-                else:
-                    if d.lower() == 'q':
-                        break
+            move = self.read_player_move(player)
+            if move == 'q':
+                sys.exit(0)
+            for index, row in enumerate(self.board.board):
+                if self.board.checkEmpty(index, move - 1):
+                    self.board.board[index][move - 1] = player
+                    if player == 'P':
+                        player = 'C'
+                    elif player == 'C':
+                        player = 'P'
+                    break
+
             potentialWinner = self.checkWinner()
             if potentialWinner:
                 print str(potentialWinner) + " won the game!"
@@ -103,9 +111,6 @@ class Board(object):
 
     def check_vertical_diagonal(self):
         """
-        >>> 1 + 1
-        3
-
         """
         for rowIndex, row in enumerate(self.board):
             maxLength = len(self.board) - 4
@@ -140,7 +145,5 @@ class Board(object):
                  val == self.board[rowIndex + 3][index - 3]))
 
 if __name__ == '__main__':
-    # import doctest
-    # doctest.testmod()
     game = ConnectFour()
     game.play()
