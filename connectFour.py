@@ -26,8 +26,8 @@ class ConnectFour(object):
         player = 'P'
         counter = 1
         while True:
-            self.board.drawBoard()
-            msg = player + '\'s turn. '
+            print self.board
+            msg = player + "'s turn. "
             d = raw_input(msg + "Enter a column number to move: ")
             if self.checkValidInput(d):
                 try:
@@ -49,7 +49,7 @@ class ConnectFour(object):
             potentialWinner = self.checkWinner()
             if potentialWinner:
                print str(potentialWinner) + " won the game!"
-               self.board.drawBoard()
+               print self.board
                break
 
 class Board(object):
@@ -64,7 +64,7 @@ class Board(object):
     def resetBoard(self):
         self.board = [['_' for j in range(self.columns)] for i in range(self.column_size)]
 
-    def drawBoard(self):
+    def __str__(self):
         columnNumbers = ""
         for i in range(self.columns + 1):
             if i != 0:
