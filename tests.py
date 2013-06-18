@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from connectFour import Board
+from connectFour import Board, ConnectFour
 
 def checkWinners(board, addDistractions=False, vertical=False, gamePiece='P'):
     """ Generates vertical and horizontal winning boards and checks if the winner checkers work"""
@@ -10,7 +10,7 @@ def checkWinners(board, addDistractions=False, vertical=False, gamePiece='P'):
     if vertical:
         rangeValue = board.column_size
         structure = "column"
-        method = board.checkVerticalDiagonal
+        method = board.check_vertical_diagonal
     for i in range(rangeValue - 1):
         print "Now checking " + structure + ": " + str(i)
         offset = 0
@@ -50,14 +50,22 @@ def errorMessage(row, offset, other, structure):
 def checkDiagonals(board, gamePiece='P', addDistractions=False):
     """Generates diagonal winning boards and checks if winning checkers work"""
     for i in range(board.column_size - 1):
-        
+
         print "Now checking column: " + str(i)
         offset = 0
         #while offset <= board.column_size - 4:
             #for j in range(offset, offset + 4):
                 #board.board
 
+def test_valid_input(game):
+    assert game.checkValidInput('1')
+    assert game.checkValidInput('q')
+    assert not game.checkValidInput('0')
+
+
 if __name__ == '__main__':
     b = Board()
+    game = ConnectFour()
     checkWinners(b, True)
     checkWinners(b, True, True)
+    test_valid_input(game)
