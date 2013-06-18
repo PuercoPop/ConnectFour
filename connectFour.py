@@ -18,7 +18,7 @@ class ConnectFour(object):
         else:
             if userInput in range(1, self.board.columns + 1):
                 valid = True
-        if type(userInput) is str and userInput.lower() == 'q':
+        if isinstance(userInput, basetring) and userInput.lower() == 'q':
             valid = True
         return valid
 
